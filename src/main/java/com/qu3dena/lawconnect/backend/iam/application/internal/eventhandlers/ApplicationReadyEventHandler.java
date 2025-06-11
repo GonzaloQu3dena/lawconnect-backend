@@ -20,7 +20,7 @@ import java.sql.Timestamp;
  * @author GonzaloQu3dena
  * @since 1.0.0
  */
-@Service
+@Service(value = "IamApplicationReadyEventHandler")
 public class ApplicationReadyEventHandler {
 
     private final RoleCommandService roleCommandService;
