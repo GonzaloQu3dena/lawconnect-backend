@@ -17,15 +17,7 @@ import java.util.UUID;
  * @since 1.0.0
  */
 @Repository
-public interface UserRepository extends JpaRepository<UserAggregate, Long> {
-
-    /**
-     * Finds a user by their unique identifier.
-     *
-     * @param id the UUID of the user to find
-     * @return an {@link Optional} containing the found {@link UserAggregate}, or empty if not found
-     */
-    Optional<UserAggregate> findById(UUID id);
+public interface UserRepository extends JpaRepository<UserAggregate, UUID> {
 
     /**
      * Finds a user by their username.
