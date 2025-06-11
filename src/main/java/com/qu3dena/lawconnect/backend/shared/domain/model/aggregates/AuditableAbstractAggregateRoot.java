@@ -8,6 +8,7 @@ import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Abstract base class for aggregate roots that require auditing.
@@ -27,8 +28,9 @@ public class AuditableAbstractAggregateRoot<T extends AbstractAggregateRoot<T>>
      * The unique identifier for the aggregate root.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    @Column(columnDefinition = "uuid", updatable = false, nullable = false)
+    private UUID id;
 
     /**
      * The timestamp when the entity was created.
