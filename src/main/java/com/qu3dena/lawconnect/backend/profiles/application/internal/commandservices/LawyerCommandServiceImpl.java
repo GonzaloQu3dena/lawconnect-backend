@@ -2,7 +2,7 @@ package com.qu3dena.lawconnect.backend.profiles.application.internal.commandserv
 
 import com.qu3dena.lawconnect.backend.profiles.domain.model.aggregates.LawyerAggregate;
 import com.qu3dena.lawconnect.backend.profiles.domain.model.commands.CreateLawyerCommand;
-import com.qu3dena.lawconnect.backend.profiles.domain.model.valueobjects.Description;
+import com.qu3dena.lawconnect.backend.shared.domain.model.valueobjects.Description;
 import com.qu3dena.lawconnect.backend.profiles.domain.model.valueobjects.Dni;
 import com.qu3dena.lawconnect.backend.profiles.domain.model.valueobjects.FullName;
 import com.qu3dena.lawconnect.backend.profiles.domain.model.valueobjects.LawyerSpecialties;

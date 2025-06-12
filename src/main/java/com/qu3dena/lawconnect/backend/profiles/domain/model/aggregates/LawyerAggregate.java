@@ -2,7 +2,7 @@ package com.qu3dena.lawconnect.backend.profiles.domain.model.aggregates;
 
 import com.qu3dena.lawconnect.backend.profiles.domain.model.entities.LawyerSpecialty;
 import com.qu3dena.lawconnect.backend.profiles.domain.model.valueobjects.ContactInfo;
-import com.qu3dena.lawconnect.backend.profiles.domain.model.valueobjects.Description;
+import com.qu3dena.lawconnect.backend.shared.domain.model.valueobjects.Description;
 import com.qu3dena.lawconnect.backend.profiles.domain.model.valueobjects.Dni;
 import com.qu3dena.lawconnect.backend.profiles.domain.model.valueobjects.FullName;
 import jakarta.persistence.*;
