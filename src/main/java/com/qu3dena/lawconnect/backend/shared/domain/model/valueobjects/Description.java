@@ -1,4 +1,4 @@
-package com.qu3dena.lawconnect.backend.profiles.domain.model.valueobjects;
+package com.qu3dena.lawconnect.backend.shared.domain.model.valueobjects;
 
 import jakarta.persistence.Embeddable;
 
