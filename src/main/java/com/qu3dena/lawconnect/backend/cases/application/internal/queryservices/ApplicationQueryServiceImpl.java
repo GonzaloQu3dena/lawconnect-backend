@@ -1,7 +1,7 @@
 package com.qu3dena.lawconnect.backend.cases.application.internal.queryservices;
 
 import com.qu3dena.lawconnect.backend.cases.domain.model.entities.Application;
-import com.qu3dena.lawconnect.backend.cases.domain.model.queries.GetApplicationsByCaseQuery;
+import com.qu3dena.lawconnect.backend.cases.domain.model.queries.GetApplicationsByCaseIdQuery;
 import com.qu3dena.lawconnect.backend.cases.domain.services.ApplicationQueryService;
 import com.qu3dena.lawconnect.backend.cases.infrastructure.persistence.jpa.repositories.ApplicationRepository;
 import org.springframework.stereotype.Service;
@@ -41,7 +41,7 @@ public class ApplicationQueryServiceImpl implements ApplicationQueryService {
      * @return a list of Application entities associated with the specified case
      */
     @Override
-    public List<Application> handle(GetApplicationsByCaseQuery query) {
+    public List<Application> handle(GetApplicationsByCaseIdQuery query) {
         return applicationRepository.findByLegalCase_Id(query.caseId());
     }
 }

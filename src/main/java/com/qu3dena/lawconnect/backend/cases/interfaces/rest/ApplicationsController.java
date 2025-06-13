@@ -2,7 +2,7 @@ package com.qu3dena.lawconnect.backend.cases.interfaces.rest;
 
 import com.qu3dena.lawconnect.backend.cases.domain.model.commands.AcceptApplicationCommand;
 import com.qu3dena.lawconnect.backend.cases.domain.model.commands.RejectApplicationCommand;
-import com.qu3dena.lawconnect.backend.cases.domain.model.queries.GetApplicationsByCaseQuery;
+import com.qu3dena.lawconnect.backend.cases.domain.model.queries.GetApplicationsByCaseIdQuery;
 import com.qu3dena.lawconnect.backend.cases.domain.services.ApplicationCommandService;
 import com.qu3dena.lawconnect.backend.cases.domain.services.ApplicationQueryService;
 import com.qu3dena.lawconnect.backend.cases.interfaces.rest.resources.ApplicationResource;
@@ -152,7 +152,7 @@ public class ApplicationsController {
     })
     public ResponseEntity<List<ApplicationResource>> getApplicationsByCase(@RequestParam UUID caseId) {
         var list = applicationQueryService.handle(
-                        new GetApplicationsByCaseQuery(caseId)
+                        new GetApplicationsByCaseIdQuery(caseId)
                 ).stream().map(ApplicationResourceFromEntityAssembler::toResourceFromEntity)
                 .collect(Collectors.toList());
 

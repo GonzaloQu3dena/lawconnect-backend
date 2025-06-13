@@ -1,7 +1,7 @@
 package com.qu3dena.lawconnect.backend.cases.domain.services;
 
 import com.qu3dena.lawconnect.backend.cases.domain.model.entities.Application;
-import com.qu3dena.lawconnect.backend.cases.domain.model.queries.GetApplicationsByCaseQuery;
+import com.qu3dena.lawconnect.backend.cases.domain.model.queries.GetApplicationsByCaseIdQuery;
 
 import java.util.List;
 
@@ -19,5 +19,5 @@ public interface ApplicationQueryService {
      * @param query the query containing the details of the case whose applications are being retrieved
      * @return a list of applications associated with the specified case
      */
-    List<Application> handle(GetApplicationsByCaseQuery query);
+    List<Application> handle(GetApplicationsByCaseIdQuery query);
 }

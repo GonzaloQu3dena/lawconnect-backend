@@ -9,5 +9,5 @@ import java.util.UUID;
  * @since 1.0
  * @author GonzaloQu3dena
  */
-public record GetApplicationsByCaseQuery(UUID caseId) {
+public record GetApplicationsByCaseIdQuery(UUID caseId) {
 }
