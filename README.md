@@ -1,11 +1,11 @@
-# LawConnect Backend Platform
+# LawConnect Backend
 
 ## Summary
 <p align="justify">
 LawConnect Backend is a monolithic platform developed in Java 17 with Spring Boot, following Domain-Driven Design (DDD) principles. It provides a RESTful API to connect lawyers and clients for managing legal cases. The application uses Spring Data JPA for persistence in MySQL, Spring Security with JWT for authorization, and is fully documented with OpenAPI and Swagger UI.
 </p>
 
-## Features
+## Features ✨
 - **RESTful API** organized into Bounded Contexts according to DDD
 - **OpenAPI Documentation** integrated with Swagger UI
 - **Security and Authentication** using Spring Security and JSON Web Tokens (JWT)
