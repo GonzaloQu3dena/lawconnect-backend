@@ -31,10 +31,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
  * <p>The controller uses {@code CaseCommandService} and {@code CaseQueryService} for handling
  * case-related operations.</p>
  *
+ * @author GonzaloQu3dena
  * @see CaseCommandService
  * @see CaseQueryService
- *
- * @author GonzaloQu3dena
  * @since 1.0
  */
 @RestController
@@ -94,13 +93,27 @@ public class CasesController {
             @ApiResponse(responseCode = "404", description = "Case not found")
     })
     public ResponseEntity<CaseResource> closeCase(@PathVariable UUID caseId, @RequestParam UUID clientId) {
-        var command = new CloseCaseCommand(caseId, clientId);
 
-        var closed = caseCommandService.handle(command)
-                .map(CaseResourceFromEntityAssembler::toResourceFromEntity)
-                .orElseThrow(() -> new IllegalStateException("Failed to close case"));
+        try {
+            var command = new CloseCaseCommand(caseId, clientId);
 
-        return ResponseEntity.ok(closed);
+            var maybeClosed = caseCommandService.handle(command);
+
+            if (maybeClosed.isEmpty())
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+            var closed = maybeClosed
+                    .map(CaseResourceFromEntityAssembler::toResourceFromEntity)
+                    .get();
+
+            return ResponseEntity.ok(closed);
+
+        } catch (IllegalStateException ex) {
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
     }
 
     /**
