@@ -9,8 +9,8 @@ import com.qu3dena.lawconnect.backend.cases.interfaces.rest.resources.CommentRes
 import com.qu3dena.lawconnect.backend.cases.interfaces.rest.resources.CreateFinalCommentResource;
 import com.qu3dena.lawconnect.backend.cases.interfaces.rest.resources.CreateGeneralCommentResource;
 import com.qu3dena.lawconnect.backend.cases.interfaces.rest.transform.CommentResourceFromEntityAssembler;
-import com.qu3dena.lawconnect.backend.cases.interfaces.rest.transform.CreateFinalCommentResourceAssembler;
-import com.qu3dena.lawconnect.backend.cases.interfaces.rest.transform.CreateGeneralCommentResourceAssembler;
+import com.qu3dena.lawconnect.backend.cases.interfaces.rest.transform.CreateFinalCommentFromResourceAssembler;
+import com.qu3dena.lawconnect.backend.cases.interfaces.rest.transform.CreateGeneralCommentFromResourceAssembler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -109,15 +109,17 @@ public class CommentsController {
             @ApiResponse(responseCode = "500", description = "Error creating general comment")
     })
     public ResponseEntity<CommentResource> createGeneral(
-            @RequestBody CreateGeneralCommentResource resource
-    ) {
-        var command = CreateGeneralCommentResourceAssembler.toCommandFromResource(resource);
-        var created = commentCommandService.handle(command)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.INTERNAL_SERVER_ERROR, "Error to create general comment"
-                ));
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(CommentResourceFromEntityAssembler.toResourceFromEntity(created));
+            @RequestBody CreateGeneralCommentResource resource) {
+
+        var command = CreateGeneralCommentFromResourceAssembler.toCommandFromResource(resource);
+
+        var comment = commentCommandService.handle(command)
+                .map(CommentResourceFromEntityAssembler::toResourceFromEntity)
+                .orElseThrow(() -> new IllegalStateException("Failed to create general comment"));
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(comment);
     }
 
     /**
@@ -136,13 +138,23 @@ public class CommentsController {
     public ResponseEntity<CommentResource> createFinal(
             @RequestBody CreateFinalCommentResource resource
     ) {
-        var command = CreateFinalCommentResourceAssembler.toCommandFromResource(resource);
-        var created = commentCommandService.handle(command)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.INTERNAL_SERVER_ERROR, "Error to create final comment"
-                ));
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(CommentResourceFromEntityAssembler.toResourceFromEntity(created));
+        try {
+            var command = CreateFinalCommentFromResourceAssembler.toCommandFromResource(resource);
+
+            var comment = commentCommandService.handle(command)
+                    .map(CommentResourceFromEntityAssembler::toResourceFromEntity)
+                    .orElseThrow(() -> new IllegalStateException("Failed to create final comment"));
+
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(comment);
+
+        } catch (IllegalStateException ex) {
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .build();
+        }
     }
 
     /**
