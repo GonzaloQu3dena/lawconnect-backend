@@ -27,7 +27,6 @@ import java.util.List;
  * Main configuration class for web security in the application.
  * Sets up security filters, authentication, authorization, CORS, CSRF protection,
  * exception handling, session management, and defines which endpoints are publicly accessible.
- * </p>
  */
 @Configuration
 @EnableMethodSecurity
@@ -38,14 +37,6 @@ public class WebSecurityConfiguration {
     private final UserDetailsService userDetailsService;
     private final AuthenticationEntryPoint unauthorizedRequestHandlerEntryPoint;
 
-    /**
-     * Constructor for WebSecurityConfiguration.
-     *
-     * @param userDetailsService                   User details service implementation.
-     * @param tokenService                         Service for handling Bearer tokens.
-     * @param hashingService                       Service for password hashing.
-     * @param unauthorizedRequestHandlerEntryPoint Handler for unauthorized requests.
-     */
     public WebSecurityConfiguration(
             @Qualifier("defaultUserDetailsService")
             UserDetailsService userDetailsService,
@@ -65,8 +56,11 @@ public class WebSecurityConfiguration {
      * @return BearerAuthorizationRequestFilter for JWT Bearer token authentication.
      */
     @Bean
-    public BearerAuthorizationRequestFilter authorizationRequestFilter() {
-        return new BearerAuthorizationRequestFilter(tokenService, userDetailsService);
+    public BearerAuthorizationRequestFilter authorizationRequestFilter(
+            BearerTokenService tokenService,
+            @Qualifier("defaultUserDetailsService") UserDetailsService uds
+    ) {
+        return new BearerAuthorizationRequestFilter(tokenService, uds);
     }
 
     /**
@@ -110,7 +104,6 @@ public class WebSecurityConfiguration {
      * <p>
      * Sets up CORS, disables CSRF, configures exception handling, stateless session management,
      * allows unauthenticated access to specific endpoints, and adds the JWT Bearer filter.
-     * </p>
      *
      * @param http HttpSecurity object for configuration.
      * @return Configured SecurityFilterChain.
@@ -118,7 +111,8 @@ public class WebSecurityConfiguration {
      */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        var permittedRequestPatterns = new String[]{
+        // URLs we leave unsecured (including Swagger/OpenAPI)
+        String[] publicMatchers = {
                 "/api/v1/authentication/**",
                 "/v3/api-docs/**",
                 "/swagger-ui.html",
@@ -126,29 +120,35 @@ public class WebSecurityConfiguration {
                 "/swagger-resources/**",
                 "/webjars/**"
         };
-        // Cross-Origin Resource Sharing configuration
-        http.cors(configurer -> configurer.configurationSource(request -> {
-            var cors = new CorsConfiguration();
-            cors.setAllowedOrigins(List.of("*"));
-            cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
-            cors.setAllowedHeaders(List.of("*"));
-            return cors;
-        }));
-        // Cross-Site Request Forgery configuration
-        http.csrf(customizer -> customizer.disable());
-        // Exception handling configuration
-        http.exceptionHandling(configurer -> configurer.authenticationEntryPoint(unauthorizedRequestHandlerEntryPoint));
-        // Session management configuration
-        http.sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        // Authorize requests configuration
-        http.authorizeHttpRequests(configurer -> configurer.requestMatchers(permittedRequestPatterns).permitAll()
-                .anyRequest().authenticated());
-        // Authentication provider configuration
-        http.authenticationProvider(authenticationProvider());
-        // Add JWT Bearer filter before username/password authentication filter
-        http.addFilterBefore(authorizationRequestFilter(), UsernamePasswordAuthenticationFilter.class);
+
+        http
+                // CORS
+                .cors(cors -> cors.configurationSource(request -> {
+                    var corsConfig = new CorsConfiguration();
+                    corsConfig.setAllowedOrigins(List.of("*"));
+                    corsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    corsConfig.setAllowedHeaders(List.of("*"));
+                    return corsConfig;
+                }))
+                // Disable CSRF as we work with JWT
+                .csrf(csrf -> csrf.disable())
+                // Exception handling
+                .exceptionHandling(e -> e.authenticationEntryPoint(unauthorizedRequestHandlerEntryPoint))
+                // Stateless (no HTTP session)
+                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                // Authorization rules
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(publicMatchers).permitAll()
+                        .anyRequest().authenticated()
+                )
+                // Set the authentication provider by calling the bean method.
+                .authenticationProvider(authenticationProvider())
+                // Insert the JWT Bearer filter before Spring's login filter.
+                .addFilterBefore(
+                        authorizationRequestFilter(tokenService, userDetailsService),
+                        UsernamePasswordAuthenticationFilter.class
+                );
 
         return http.build();
     }
-
 }

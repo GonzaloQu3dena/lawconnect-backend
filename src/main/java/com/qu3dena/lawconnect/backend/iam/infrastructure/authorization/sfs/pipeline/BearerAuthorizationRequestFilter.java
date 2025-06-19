@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -61,20 +62,28 @@ public class BearerAuthorizationRequestFilter extends OncePerRequestFilter {
      * @throws IOException If an error occurs
      */
     @Override
-    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)  throws ServletException, IOException {
         try {
-            var token = tokenService.getBearerTokenFrom(request);
-            LOGGER.info("Token: {}", token);
-            if (Objects.nonNull(token) && tokenService.validateToken(token)) {
-                var username = tokenService.getUsernameFromToken(token);
-                var userDetails = (UserDetailsImpl) userDetailsService.loadUserByUsername(username);
-                SecurityContextHolder.getContext().setAuthentication(UsernamePasswordAuthenticationTokenBuilder.build(userDetails, request));
-            } else {
-                LOGGER.warn("Token is not valid");
+            // ──── 1) Extraer el header y el token ────────────────
+            String bearerToken = tokenService.getBearerTokenFrom(request);
+            if (bearerToken != null && tokenService.validateToken(bearerToken)) {
+                // ──── 2) Obtener el username y cargar UserDetails ───
+                String username = tokenService.getUsernameFromToken(bearerToken);
+                UserDetailsImpl user = (UserDetailsImpl)
+                        userDetailsService.loadUserByUsername(username);
+
+                // ──── 3) Construir el Authentication y setear en contexto ───
+                UsernamePasswordAuthenticationToken auth =
+                        UsernamePasswordAuthenticationTokenBuilder.build(user, request);
+
+                SecurityContextHolder.getContext().setAuthentication(auth);
             }
-        } catch (Exception e) {
-            LOGGER.error("Cannot set user authentication: {}", e.getMessage());
+            // si bearerToken es null o inválido, no autenticamos y dejamos pasar
+        } catch (Exception ex) {
+            LOGGER.error("Cannot set user authentication: {}", ex.getMessage());
         }
+
+        // ──── 4) Continuar la cadena de filtros ─────────────
         filterChain.doFilter(request, response);
     }
 }
