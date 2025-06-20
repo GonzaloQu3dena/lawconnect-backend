@@ -1,6 +1,7 @@
 package com.qu3dena.lawconnect.backend.cases.infrastructure.persistence.jpa.repositories;
 
 import com.qu3dena.lawconnect.backend.cases.domain.model.entities.Invitation;
+import com.qu3dena.lawconnect.backend.cases.domain.model.valueobjects.InvitationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,6 +18,15 @@ import java.util.UUID;
  */
 @Repository
 public interface InvitationRepository extends JpaRepository<Invitation, Long> {
+
+    /**
+     * Finds all invitations associated with a specific lawyer and having the given status.
+     *
+     * @param lawyerId the unique identifier of the lawyer
+     * @param status   the invitation status to filter by
+     * @return a list of invitations matching the given lawyer ID and status
+     */
+    List<Invitation> findByLawyerIdAndStatus(UUID lawyerId, InvitationStatus status);
 
     /**
      * Finds all invitations associated with a specific lawyer.

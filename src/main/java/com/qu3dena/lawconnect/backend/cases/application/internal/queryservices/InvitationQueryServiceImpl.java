@@ -2,6 +2,7 @@ package com.qu3dena.lawconnect.backend.cases.application.internal.queryservices;
 
 import com.qu3dena.lawconnect.backend.cases.domain.model.entities.Invitation;
 import com.qu3dena.lawconnect.backend.cases.domain.model.queries.GetInvitationsByLawyerIdQuery;
+import com.qu3dena.lawconnect.backend.cases.domain.model.valueobjects.InvitationStatus;
 import com.qu3dena.lawconnect.backend.cases.domain.services.InvitationQueryService;
 import com.qu3dena.lawconnect.backend.cases.infrastructure.persistence.jpa.repositories.InvitationRepository;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,6 @@ public class InvitationQueryServiceImpl implements InvitationQueryService {
      */
     @Override
     public List<Invitation> handle(GetInvitationsByLawyerIdQuery query) {
-        return invitationRepository.findByLawyerId(query.lawyerId());
+        return invitationRepository.findByLawyerIdAndStatus(query.lawyerId(), InvitationStatus.PENDING);
     }
 }
