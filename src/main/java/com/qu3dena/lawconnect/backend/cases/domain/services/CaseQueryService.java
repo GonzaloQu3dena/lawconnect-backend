@@ -15,6 +15,14 @@ import java.util.Optional;
 public interface CaseQueryService {
 
     /**
+     * Handles the retrieval of all cases.
+     *
+     * @param query the query to retrieve all cases
+     * @return a list of all case aggregates
+     */
+    List<CaseAggregate> handle(GetAllCasesQuery query);
+
+    /**
      * Handles the retrieval of a case by its ID.
      *
      * @param query the query containing the ID of the case to be retrieved

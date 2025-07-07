@@ -3,11 +3,7 @@ package com.qu3dena.lawconnect.backend.cases.application.internal.queryservices;
 import com.qu3dena.lawconnect.backend.cases.domain.model.aggregates.CaseAggregate;
 import com.qu3dena.lawconnect.backend.cases.domain.model.entities.Application;
 import com.qu3dena.lawconnect.backend.cases.domain.model.entities.Invitation;
-import com.qu3dena.lawconnect.backend.cases.domain.model.queries.GetCaseByIdQuery;
-import com.qu3dena.lawconnect.backend.cases.domain.model.queries.GetCasesByClientIdQuery;
-import com.qu3dena.lawconnect.backend.cases.domain.model.queries.GetCasesByLawyerIdQuery;
-import com.qu3dena.lawconnect.backend.cases.domain.model.queries.GetCasesByStatusQuery;
-import com.qu3dena.lawconnect.backend.cases.domain.model.queries.GetSuggestedCasesQuery;
+import com.qu3dena.lawconnect.backend.cases.domain.model.queries.*;
 import com.qu3dena.lawconnect.backend.cases.domain.model.valueobjects.CaseStatus;
 import com.qu3dena.lawconnect.backend.cases.domain.services.CaseQueryService;
 import com.qu3dena.lawconnect.backend.cases.infrastructure.persistence.jpa.repositories.ApplicationRepository;
@@ -48,6 +44,11 @@ public class CaseQueryServiceImpl implements CaseQueryService {
         this.caseRepository = caseRepository;
         this.invitationRepository = invitationRepository;
         this.applicationRepository = applicationRepository;
+    }
+
+    @Override
+    public List<CaseAggregate> handle(GetAllCasesQuery query) {
+        return caseRepository.findAll();
     }
 
     /**

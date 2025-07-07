@@ -140,6 +140,20 @@ public class CasesController {
         return ResponseEntity.ok(canceled);
     }
 
+    @GetMapping
+    @Operation(summary = "Get all cases", description = "Retrieves all cases.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Cases retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "No cases found")
+    })
+    public ResponseEntity<List<CaseResource>> getAllCases() {
+        var list = caseQueryService.handle(new GetAllCasesQuery())
+                .stream().map(CaseResourceFromEntityAssembler::toResourceFromEntity)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(list);
+    }
+
     /**
      * Retrieves a case by its identifier.
      *
@@ -167,13 +181,13 @@ public class CasesController {
      * @param clientId the unique identifier of the client
      * @return a ResponseEntity with the list of CaseResource and HTTP status 200
      */
-    @GetMapping
+    @GetMapping("/clients/{clientId}")
     @Operation(summary = "Get cases by client ID", description = "Retrieves all cases for a specific client.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Cases retrieved successfully"),
             @ApiResponse(responseCode = "404", description = "Client not found")
     })
-    public ResponseEntity<List<CaseResource>> getCasesByClient(@RequestParam UUID clientId) {
+    public ResponseEntity<List<CaseResource>> getCasesByClient(@PathVariable UUID clientId) {
         var list = caseQueryService.handle(new GetCasesByClientIdQuery(clientId))
                 .stream().map(CaseResourceFromEntityAssembler::toResourceFromEntity)
                 .collect(Collectors.toList());
