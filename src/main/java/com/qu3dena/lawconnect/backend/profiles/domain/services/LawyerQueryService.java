@@ -1,7 +1,7 @@
 package com.qu3dena.lawconnect.backend.profiles.domain.services;
 
 import com.qu3dena.lawconnect.backend.profiles.domain.model.aggregates.LawyerAggregate;
-import com.qu3dena.lawconnect.backend.profiles.domain.model.queries.GetLawyerByDniQuery;
+import com.qu3dena.lawconnect.backend.profiles.domain.model.queries.GetLawyerByUserIdQuery;
 import com.qu3dena.lawconnect.backend.profiles.domain.model.queries.GetLawyerBySpecialtyQuery;
 
 import java.util.Optional;
@@ -25,11 +25,5 @@ public interface LawyerQueryService {
      */
     Optional<LawyerAggregate> handle(GetLawyerBySpecialtyQuery query);
 
-    /**
-     * Handles the retrieval of a lawyer by DNI.
-     *
-     * @param query the query containing the DNI of the lawyer to retrieve
-     * @return an {@link Optional} containing the retrieved {@link LawyerAggregate}, or empty if no lawyer is found
-     */
-    Optional<LawyerAggregate> handle(GetLawyerByDniQuery query);
+    Optional<LawyerAggregate> handle(GetLawyerByUserIdQuery query);
 }

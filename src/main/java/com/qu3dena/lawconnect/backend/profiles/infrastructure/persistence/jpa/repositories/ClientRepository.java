@@ -27,11 +27,5 @@ public interface ClientRepository extends JpaRepository<ClientAggregate, UUID> {
      */
     boolean existsByDni_Value(String dni);
 
-    /**
-     * Finds a client by their DNI value.
-     *
-     * @param dni the DNI value of the client to find
-     * @return an {@link Optional} containing the found {@link ClientAggregate}, or empty if no client is found
-     */
-    Optional<ClientAggregate> findByDni_Value(String dni);
+    Optional<ClientAggregate> findByUserId(UUID dni);
 }

@@ -1,7 +1,7 @@
 package com.qu3dena.lawconnect.backend.profiles.application.internal.queryservices;
 
 import com.qu3dena.lawconnect.backend.profiles.domain.model.aggregates.LawyerAggregate;
-import com.qu3dena.lawconnect.backend.profiles.domain.model.queries.GetLawyerByDniQuery;
+import com.qu3dena.lawconnect.backend.profiles.domain.model.queries.GetLawyerByUserIdQuery;
 import com.qu3dena.lawconnect.backend.profiles.domain.model.queries.GetLawyerBySpecialtyQuery;
 import com.qu3dena.lawconnect.backend.profiles.domain.model.valueobjects.LawyerSpecialties;
 import com.qu3dena.lawconnect.backend.profiles.domain.services.LawyerQueryService;
@@ -46,7 +46,7 @@ public class LawyerQueryServiceImpl implements LawyerQueryService {
      * {@inheritDoc}
      */
     @Override
-    public Optional<LawyerAggregate> handle(GetLawyerByDniQuery query) {
-        return lawyerRepository.findByDni_Value(query.dni());
+    public Optional<LawyerAggregate> handle(GetLawyerByUserIdQuery query) {
+        return lawyerRepository.findByUserId(query.userId());
     }
 }

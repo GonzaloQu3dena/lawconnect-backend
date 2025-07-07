@@ -1,7 +1,7 @@
 package com.qu3dena.lawconnect.backend.profiles.application.internal.queryservices;
 
 import com.qu3dena.lawconnect.backend.profiles.domain.model.aggregates.ClientAggregate;
-import com.qu3dena.lawconnect.backend.profiles.domain.model.queries.GetClientByDniQuery;
+import com.qu3dena.lawconnect.backend.profiles.domain.model.queries.GetClientByUserIdQuery;
 import com.qu3dena.lawconnect.backend.profiles.domain.services.ClientQueryService;
 import com.qu3dena.lawconnect.backend.profiles.infrastructure.persistence.jpa.repositories.ClientRepository;
 import org.springframework.stereotype.Service;
@@ -36,7 +36,7 @@ public class ClientQueryServiceImpl implements ClientQueryService {
      * {@inheritDoc}
      */
     @Override
-    public Optional<ClientAggregate> handle(GetClientByDniQuery query) {
-        return clientRepository.findByDni_Value(query.dni());
+    public Optional<ClientAggregate> handle(GetClientByUserIdQuery query) {
+        return clientRepository.findByUserId(query.userId());
     }
 }

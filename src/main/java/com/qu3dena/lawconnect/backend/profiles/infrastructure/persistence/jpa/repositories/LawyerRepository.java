@@ -38,11 +38,5 @@ public interface LawyerRepository extends JpaRepository<LawyerAggregate, UUID> {
      */
     Optional<LawyerAggregate> findBySpecialties_Name(LawyerSpecialties name);
 
-    /**
-     * Finds a lawyer by their DNI value.
-     *
-     * @param dni the DNI value of the lawyer to find
-     * @return an {@link Optional} containing the found {@link LawyerAggregate}, or empty if no lawyer is found
-     */
-    Optional<LawyerAggregate> findByDni_Value(String dni);
+    Optional<LawyerAggregate> findByUserId(UUID userId);
 }

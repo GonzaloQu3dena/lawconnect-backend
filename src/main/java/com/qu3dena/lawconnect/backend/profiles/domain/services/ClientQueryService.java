@@ -1,7 +1,7 @@
 package com.qu3dena.lawconnect.backend.profiles.domain.services;
 
 import com.qu3dena.lawconnect.backend.profiles.domain.model.aggregates.ClientAggregate;
-import com.qu3dena.lawconnect.backend.profiles.domain.model.queries.GetClientByDniQuery;
+import com.qu3dena.lawconnect.backend.profiles.domain.model.queries.GetClientByUserIdQuery;
 
 import java.util.Optional;
 
@@ -16,11 +16,5 @@ import java.util.Optional;
  */
 public interface ClientQueryService {
 
-    /**
-     * Handles the retrieval of a client by DNI.
-     *
-     * @param query the query containing the DNI of the client to retrieve
-     * @return an {@link Optional} containing the retrieved {@link ClientAggregate}, or empty if no client is found
-     */
-    Optional<ClientAggregate> handle(GetClientByDniQuery query);
+    Optional<ClientAggregate> handle(GetClientByUserIdQuery query);
 }
