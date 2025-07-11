@@ -71,10 +71,12 @@ public class CaseQueryServiceImpl implements CaseQueryService {
      * @param query the query object containing the lawyer identifier
      * @return a list of suggested {@code CaseAggregate} for the lawyer
      */
-    @Override
+   @Override
     public List<CaseAggregate> handle(GetSuggestedCasesQuery query) {
-        // 1. Retrieve all cases in the OPEN state.
-        var openCases = caseRepository.findByCurrentStatus(CaseStatus.OPEN);
+        // 1. Retrieve all cases in the OPEN or EVALUATION state.
+        var openOrEvaluationCases = caseRepository.findByCurrentStatusIn(
+            List.of(CaseStatus.OPEN, CaseStatus.EVALUATION)
+        );
 
         // 2. Get IDs of cases where the lawyer has already been invited.
         var casesWhereHeWasInvited = invitationRepository
@@ -93,7 +95,7 @@ public class CaseQueryServiceImpl implements CaseQueryService {
                 .collect(Collectors.toSet());
 
         // 4. Filter out cases where the lawyer was already invited or applied.
-        return openCases.stream()
+        return openOrEvaluationCases.stream()
                 .filter(case_ -> !casesWhereHeWasInvited.contains(case_.getId()))
                 .filter(case_ -> !casesWhereHeApplied.contains(case_.getId()))
                 .collect(Collectors.toList());

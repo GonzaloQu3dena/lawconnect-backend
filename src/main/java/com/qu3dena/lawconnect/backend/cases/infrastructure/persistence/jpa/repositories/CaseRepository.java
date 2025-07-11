@@ -42,4 +42,6 @@ public interface CaseRepository extends JpaRepository<CaseAggregate, UUID> {
      * @return a list of cases assigned to the given lawyer and with the given status
      */
     List<CaseAggregate> findByAssignedLawyerIdAndCurrentStatus(UUID lawyerId, CaseStatus status);
+
+    List<CaseAggregate> findByCurrentStatusIn(List<CaseStatus> statuses);
 }
